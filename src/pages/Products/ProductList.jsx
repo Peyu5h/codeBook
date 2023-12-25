@@ -3,16 +3,27 @@ import { FaFilter } from "react-icons/fa";
 import ProductCard from "../../components/ProductCard";
 import { useState } from "react";
 import { RxCross2 } from "react-icons/rx";
+import { useEffect } from "react";
 
 const ProductPage = () => {
   const [show, setShow] = useState(false);
+  const [product, setProduct] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await fetch("http://localhost:8000/products");
+      const response = await data.json();
+      setProduct(response);
+    }
+    fetchData();
+  }, []);
 
   return (
     <div>
       <Header />
       <div className="content lg:mt-16 mt-6 flex justify-between md:mx-24 mx-2">
         <div className="md:text-2xl text-xl font-pop text-slate-300">
-          Showing 12 eBooks
+          Showing {product.length} eBooks
         </div>
         <div
           onClick={() => setShow(!show)}
@@ -180,13 +191,9 @@ const ProductPage = () => {
       ) : null}
 
       <div className="grid lg:grid-cols-3 lg:grid-rows-1 md:grid-rows-1 grid-cols-1 md:grid-cols-2 grid-rows-3 gap-6 gap-y-8 mx-2 md:mx-24 mt-12">
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
+        {product.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
       </div>
     </div>
   );

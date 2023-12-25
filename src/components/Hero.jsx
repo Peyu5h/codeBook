@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import Book from "../assets/book.png";
+// import Book from "../assets/book.png";
 import TextReveal from "../components/animations/TextReveal";
 
 const Hero = () => {
@@ -24,7 +24,11 @@ const Hero = () => {
           </Link>
         </div>
         <div className="img flex justify-center item-center ">
-          <img className="lg:w-[32rem] h-auto" src={Book} alt="Book" />
+          <img
+            className="lg:w-[32rem] h-auto"
+            src="https://assets-global.website-files.com/64c4b66a44c38c5fa4309e5a/6589bfa25b7d61bf88a1f13e_book.png"
+            alt="Book"
+          />
         </div>
       </section>
     </div>
