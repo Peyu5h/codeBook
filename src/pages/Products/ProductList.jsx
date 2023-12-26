@@ -5,12 +5,14 @@ import { useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { useFilter } from "../../context/FilterContext.jsx";
 
 const ProductPage = () => {
   const [show, setShow] = useState(false);
-  const [product, setProduct] = useState([]);
   const search = useLocation().search;
   const searchTerm = new URLSearchParams(search).get("search");
+
+  const { productList, initialProductList } = useFilter();
 
   useEffect(() => {
     async function fetchData() {
@@ -20,7 +22,7 @@ const ProductPage = () => {
         }`
       );
       const response = await data.json();
-      setProduct(response);
+      initialProductList(response);
     }
     fetchData();
   }, [searchTerm]);
@@ -30,7 +32,7 @@ const ProductPage = () => {
       <Header />
       <div className="content lg:mt-16 mt-6 flex justify-between md:mx-24 mx-2">
         <div className="md:text-2xl text-xl font-pop text-slate-300">
-          Showing {product.length} eBooks
+          Showing {productList.length} eBooks
         </div>
         <div
           onClick={() => setShow(!show)}
@@ -198,7 +200,7 @@ const ProductPage = () => {
       ) : null}
 
       <div className="grid lg:grid-cols-3 lg:grid-rows-1 md:grid-rows-1 grid-cols-1 md:grid-cols-2 grid-rows-3 gap-6 gap-y-8 mx-2 md:mx-24 mt-12">
-        {product.map((product) => (
+        {productList.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
