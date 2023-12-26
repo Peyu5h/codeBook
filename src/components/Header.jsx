@@ -1,11 +1,20 @@
 import Logo from "../assets/logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaUserCircle } from "react-icons/fa";
 import { useState } from "react";
+import { useRef } from "react";
 
 const Header = () => {
   const [show, setShow] = useState(false);
+  const searchRef = useRef();
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    navigate(`/books?search=${searchRef.current.value}`);
+  };
+
   return (
     <div className="header-container relative">
       <nav className="flex justify-between pb-6 border-b-2 border-gray-700">
@@ -36,9 +45,10 @@ const Header = () => {
                 />
               </svg>
             </div>
-            <form>
+            <form onSubmit={handleSubmit}>
               <input
                 type="text"
+                ref={searchRef}
                 id="search-navbar"
                 name="search"
                 className="focus:outline-none border-none block w-full p-2 ps-10 text-sm rounded-lg bg-slate-700"

@@ -4,19 +4,26 @@ import ProductCard from "../../components/ProductCard";
 import { useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 const ProductPage = () => {
   const [show, setShow] = useState(false);
   const [product, setProduct] = useState([]);
+  const search = useLocation().search;
+  const searchTerm = new URLSearchParams(search).get("search");
 
   useEffect(() => {
     async function fetchData() {
-      const data = await fetch("http://localhost:8000/products");
+      const data = await fetch(
+        `http://localhost:8000/products?name_like=${
+          searchTerm ? searchTerm : ""
+        }`
+      );
       const response = await data.json();
       setProduct(response);
     }
     fetchData();
-  }, []);
+  }, [searchTerm]);
 
   return (
     <div>
