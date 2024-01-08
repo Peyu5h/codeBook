@@ -13,16 +13,18 @@ const ProductPage = () => {
   const searchTerm = new URLSearchParams(search).get("search");
 
   const { productList, initialProductList } = useFilter();
+  const { state, dispatch } = useFilter();
 
   useEffect(() => {
     async function fetchData() {
       const data = await fetch(
-        `http://localhost:8000/products?name_like=${
+        `http://localhost:3000/products?name_like=${
           searchTerm ? searchTerm : ""
         }`
       );
       const response = await data.json();
       initialProductList(response);
+      console.log(response);
     }
     fetchData();
   }, [searchTerm]);
@@ -54,6 +56,14 @@ const ProductPage = () => {
                       <div>
                         <input
                           id="best-seller"
+                          onClick={() =>
+                            dispatch({
+                              type: "BEST_SELLER_ONLY",
+                              payload: {
+                                bestSellerOnly: !state.bestSellerOnly,
+                              },
+                            })
+                          }
                           type="checkbox"
                           value=""
                           className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 dark:bg-gray-700 dark:border-gray-600"
