@@ -5,12 +5,8 @@ import { useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { useAtom } from "jotai";
-import { cartAtom } from "../../reducer/atom";
 
 const ProductPage = () => {
-  const [cart, setCart] = useAtom(cartAtom);
-  console.log(cart);
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const searchTerm = searchParams.get("search");

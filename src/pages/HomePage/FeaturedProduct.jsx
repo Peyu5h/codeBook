@@ -6,7 +6,7 @@ const FeaturedProduct = () => {
 
   useEffect(() => {
     async function fetchData() {
-      const data = await fetch("http://localhost:8000/featured_products");
+      const data = await fetch("http://localhost:3000/featured_products");
       const response = await data.json();
       setProduct(response);
     }

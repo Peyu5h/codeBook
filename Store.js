@@ -1,9 +1,8 @@
-// store.js
 import { configureStore } from "@reduxjs/toolkit";
-import filterReducer from "./src/reducer/ReduxFilterReducer";
+import userReducer from "./src/reducer/userReducer";
 
 const store = configureStore({
-  reducer: filterReducer,
+  reducer: userReducer,
 });
 
 export default store;

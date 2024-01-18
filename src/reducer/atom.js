@@ -1,6 +1,11 @@
+// import { atomWithStorage } from "jotai/utils";
+// export const cartAtom = atomWithStorage("cart", []);
+
 // import { atom } from "jotai";
+// import Cookies from "js-cookie";
 
-// export const cartAtom = atom([]);
+// const initialState = Cookies.get("user")
+//   ? JSON.parse(Cookies.get("user"))
+//   : null;
 
-import { atomWithStorage } from "jotai/utils";
-export const cartAtom = atomWithStorage("cart", []);
+// export const userAtom = atom(initialState);

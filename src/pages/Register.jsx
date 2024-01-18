@@ -1,14 +1,84 @@
 import { Link } from "react-router-dom";
-
+import * as Yup from "yup";
+import { useFormik } from "formik";
+import { useState } from "react";
+import Cookies from "js-cookie";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 const Register = () => {
+  const [user, setUser] = useState({});
+  const navigate = useNavigate();
+
+  const notify = (message, type) => {
+    toast(message, {
+      type: type,
+      position: "top-center",
+      autoClose: 8000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      email: "",
+      password: "",
+    },
+    validationSchema: Yup.object({
+      name: Yup.string().required("Name is required"),
+      email: Yup.string()
+        .email("Invalid email address")
+        .required("Email is required"),
+      password: Yup.string().required("Password is required"),
+    }),
+    onSubmit: async (values, { resetForm }) => {
+      setUser(values);
+      resetForm();
+    },
+  });
+
+  const handleSubmit = async (e) => {
+    try {
+      const response = await fetch("http://localhost:3001/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      });
+
+      const data = await response.json();
+
+      const { message, ...rest } = data;
+
+      {
+        data.message == "Registration successful! "
+          ? (notify(data.message, "success"),
+            Cookies.set("user", rest),
+            setTimeout(() => {
+              navigate("/");
+            }, 2000))
+          : notify("User with email already exist!", "error");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    <div className="flex items-center justify-center h-full flex-col font-pop">
+    <div className="flex items-center text-gray-800 justify-center h-full flex-col font-pop">
       <div className="form bg-white p-8 shadow-md rounded-md">
         <h2 className="text-2xl font-semibold text-center text-gray-700 mb-2">
           Register
         </h2>
         <div className="border h-[2px] bg-gray-200 mb-6"></div>
-        <form className="flex flex-col">
+        <form onSubmit={formik.handleSubmit} className="flex flex-col">
           <div className="name flex flex-col mb-4">
             <label htmlFor="text" className="text-gray-600 mb-1 ml-2 text-sm">
               Name
@@ -16,9 +86,17 @@ const Register = () => {
             <input
               type="text"
               name="name"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.name}
               placeholder="Enter you name"
               className="p-2 focus:outline-none border-2 border-blue-100 rounded-md"
             />
+            {formik.touched.name && formik.errors.name ? (
+              <div className="text-red-500 text-xs ml-1">
+                {formik.errors.name}
+              </div>
+            ) : null}
           </div>
           <div className="email flex flex-col mb-4">
             <label htmlFor="email" className="text-gray-600 mb-1 ml-2 text-sm">
@@ -27,9 +105,17 @@ const Register = () => {
             <input
               type="email"
               name="email"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.email}
               placeholder="Enter you email"
               className="p-2 focus:outline-none border-2 border-blue-100 rounded-md"
             />
+            {formik.touched.email && formik.errors.email ? (
+              <div className="text-red-500 text-xs ml-1">
+                {formik.errors.email}
+              </div>
+            ) : null}
           </div>
           <div className="password flex flex-col mb-8">
             <label
@@ -41,11 +127,20 @@ const Register = () => {
             <input
               type="password"
               name="password"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.password}
               placeholder=" Enter your password"
               className="p-2 focus:outline-none border-2 border-blue-100 rounded-md"
             />
+            {formik.touched.password && formik.errors.password ? (
+              <div className="text-red-500 text-xs ml-1">
+                {formik.errors.password}
+              </div>
+            ) : null}
           </div>
           <button
+            onClick={handleSubmit}
             type="submit"
             className="p-4 bg-blue-600 text-white font-medium rounded-lg mb-6 hover:bg-blue-700 transition-all"
           >
@@ -62,6 +157,7 @@ const Register = () => {
           </div>
         </form>
       </div>
+      <ToastContainer />
     </div>
   );
 };
