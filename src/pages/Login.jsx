@@ -59,7 +59,7 @@ const Login = () => {
       {
         data.message == "Login Successful"
           ? (notify(data.message, "success"),
-            Cookies.set("user", rest),
+            Cookies.set("user", JSON.stringify(rest)),
             setTimeout(() => {
               navigate("/");
             }, 2000))

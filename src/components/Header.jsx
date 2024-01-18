@@ -3,11 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaUserCircle } from "react-icons/fa";
 import { useState } from "react";
+import { useAtom } from "jotai";
+import userAtom from "../reducer/atom";
+import Cookies from "js-cookie";
 
 const Header = () => {
   const [show, setShow] = useState(false);
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
+  const [user, setUser] = useAtom(userAtom);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -78,8 +82,8 @@ const Header = () => {
       </nav>
       {show ? (
         <div className="z-10 ml-auto absolute top-100 right-0 h-auto  w-44 rounded-b-md bg-slate-700">
-          <div className="text-md font-light p-2 mt-2 w-full">
-            user@gmail.com
+          <div className="text-sm font-light p-2 mt-2 w-full">
+            {user?.email}
           </div>
 
           <div className="divider h-[2px] w-full bg-slate-700 my-1 "></div>
@@ -105,7 +109,12 @@ const Header = () => {
               </div>
             </Link>
 
-            <div className="text-md cursor-pointer font-light p-2  hover:bg-slate-500 transition-all border-slate-500 w-full">
+            <div
+              onClick={() => {
+                Cookies.remove("user");
+              }}
+              className="text-md cursor-pointer font-light p-2  hover:bg-slate-500 transition-all border-slate-500 w-full"
+            >
               Logout
             </div>
           </div>
