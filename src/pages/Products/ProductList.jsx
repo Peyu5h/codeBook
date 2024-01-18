@@ -102,7 +102,12 @@ const ProductPage = () => {
     setRatingFilter(e);
   };
 
-  const handleClearAll = () => {};
+  const handleClearAll = () => {
+    setRatingFilter("");
+    setPriceFilter("");
+    setOnlyInStock("");
+    setBestSellerOnly("");
+  };
   console.log(filteredProductList);
 
   return (
