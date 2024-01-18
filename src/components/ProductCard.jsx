@@ -3,8 +3,12 @@ import { IoAdd } from "react-icons/io5";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useAtom } from "jotai";
+import { cartAtom } from "../reducer/atom";
 
 const ProductCard = ({ product }) => {
+  const [cart, setCart] = useAtom(cartAtom);
+
   const one =
     "https://assets-global.website-files.com/64c4b66a44c38c5fa4309e5a/6536851236dce583259b23be_1-STAR.png";
   const two =
@@ -31,6 +35,17 @@ const ProductCard = ({ product }) => {
       setRating(five);
     }
   }, [product.rating]);
+
+  const handleClick = () => {
+    const isProductInCart = cart.includes(product.name);
+
+    if (isProductInCart) {
+      const updatedCart = cart.filter((itemName) => itemName !== product.name);
+      setCart(updatedCart);
+    } else {
+      setCart([...cart, product.name]);
+    }
+  };
 
   return (
     <div>
@@ -63,7 +78,10 @@ const ProductCard = ({ product }) => {
             <div className="price text-xl mt-2 font-semibold">
               $ {product.price}
             </div>
-            <button className="ADD bg-blue-500 text-white hover:bg-blue-600 transition-all md:px-3 md:py-2 px-2 py-1 rounded-md">
+            <button
+              onClick={handleClick}
+              className="ADD bg-blue-500 text-white hover:bg-blue-600 transition-all md:px-3 md:py-2 px-2 py-1 rounded-md"
+            >
               <span className="flex items-center">
                 Add to cart <IoAdd className="ml-2" />
               </span>
