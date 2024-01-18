@@ -3,16 +3,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaUserCircle } from "react-icons/fa";
 import { useState } from "react";
-import { useRef } from "react";
 
 const Header = () => {
   const [show, setShow] = useState(false);
-  const searchRef = useRef();
+  const [search, setSearch] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate(`/books?search=${searchRef.current.value}`);
+    search ? navigate(`/books?search=${search}`) : null;
+    setSearch("");
   };
 
   return (
@@ -26,7 +26,10 @@ const Header = () => {
             </h1>
           </div>
         </Link>
-        <div className="flex items-center lg:gap-8 gap-5">
+        <div
+          onClick={handleSubmit}
+          className="flex items-center lg:gap-8 gap-5 cursor-pointer z-999"
+        >
           <div className="search bar relative hidden md:block">
             <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
               <svg
@@ -48,9 +51,10 @@ const Header = () => {
             <form onSubmit={handleSubmit}>
               <input
                 type="text"
-                ref={searchRef}
+                onChange={(e) => setSearch(e.target.value)}
                 id="search-navbar"
                 name="search"
+                value={search}
                 className="focus:outline-none border-none block w-full p-2 ps-10 text-sm rounded-lg bg-slate-700"
                 placeholder="Search..."
                 autoComplete="off"

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 const ProductDetails = () => {
   const { id } = useParams();
+  console.log(id);
   const [product, setProduct] = useState([]);
   const one =
     "https://assets-global.website-files.com/64c4b66a44c38c5fa4309e5a/6536851236dce583259b23be_1-STAR.png";
@@ -34,7 +35,7 @@ const ProductDetails = () => {
 
   useEffect(() => {
     async function fetchData() {
-      const data = await fetch(`http://localhost:8000/products/${id}`);
+      const data = await fetch(`http://localhost:3000/products/${id}`);
       const response = await data.json();
       setProduct(response);
     }

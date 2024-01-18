@@ -6,6 +6,7 @@ import ProductDetails from "./pages/Products/ProductDetails";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/DashBoard/DashBoardPage";
+
 const App = () => {
   return (
     <main className="bg-gray-800 h-screen w-full overflow-auto font-pop text-zinc-100 p-6 sm:p-12">
