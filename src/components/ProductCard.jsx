@@ -3,8 +3,20 @@ import { IoAdd } from "react-icons/io5";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import userAtom from "../reducer/atom";
+import { useAtom } from "jotai";
+
+import { cartAtom } from "../reducer/cartAtom";
 
 const ProductCard = ({ product }) => {
+  const [user] = useAtom(userAtom);
+  const [cart, setCart] = useAtom(cartAtom);
+  const isInCart =
+    cart.user?.cart &&
+    cart.user.cart.map((item) => item._id).includes(product._id);
+
+  console.log(cart);
+
   const one =
     "https://assets-global.website-files.com/64c4b66a44c38c5fa4309e5a/6536851236dce583259b23be_1-STAR.png";
   const two =
@@ -31,6 +43,22 @@ const ProductCard = ({ product }) => {
       setRating(five);
     }
   }, [product.rating]);
+
+  const AddToCart = async () => {
+    try {
+      const data = await fetch(`http://localhost:3001/addToCart`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: user.id, productId: product._id }),
+      });
+      const response = await data.json();
+      setCart(response.user.cart);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div>
@@ -63,16 +91,21 @@ const ProductCard = ({ product }) => {
             <div className="price text-xl mt-2 font-semibold">
               $ {product.price}
             </div>
-            <button className="ADD bg-blue-500 text-white hover:bg-blue-600 transition-all md:px-3 md:py-2 px-2 py-1 rounded-md">
-              <span className="flex items-center">
-                Add to cart <IoAdd className="ml-2" />
-              </span>
-            </button>
 
-            <button className="REMOVE bg-red-600 text-white hover:bg-red-700 transition-all md:px-3 md:py-2 px-2 py-1 rounded-md">
-              <span className="flex items-center">
-                Remove <FaRegTrashCan className="ml-2" />
-              </span>
+            <button onClick={AddToCart}>
+              {isInCart ? (
+                <div className="ADD bg-blue-500 text-white hover:bg-blue-600 transition-all md:px-3 md:py-2 px-2 py-1 rounded-md">
+                  <span className="flex items-center">
+                    Add to cart <IoAdd className="ml-2" />
+                  </span>
+                </div>
+              ) : (
+                <div className="REMOVE bg-red-600 text-white hover:bg-red-700 transition-all md:px-3 md:py-2 px-2 py-1 rounded-md">
+                  <span className="flex items-center">
+                    Remove <FaRegTrashCan className="ml-2" />
+                  </span>
+                </div>
+              )}
             </button>
           </div>
         </div>

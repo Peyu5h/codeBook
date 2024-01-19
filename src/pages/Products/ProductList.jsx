@@ -5,6 +5,8 @@ import { useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { useAtom } from "jotai";
+import { cartAtom } from "../../reducer/cartAtom";
 
 const ProductPage = () => {
   const location = useLocation();
@@ -108,6 +110,7 @@ const ProductPage = () => {
     setOnlyInStock("");
     setBestSellerOnly("");
   };
+  const [cart, setCart] = useAtom(cartAtom);
 
   return (
     <div>
@@ -304,7 +307,7 @@ const ProductPage = () => {
 
           <div className="grid lg:grid-cols-3 lg:grid-rows-1 md:grid-rows-1 grid-cols-1 md:grid-cols-2 grid-rows-3 gap-6 gap-y-8 mx-2 md:mx-24 mt-12">
             {filteredProductList.map((product) => (
-              <ProductCard key={product._id} product={product} />
+              <ProductCard key={product._id} product={product} cart={cart} />
             ))}
           </div>
         </div>

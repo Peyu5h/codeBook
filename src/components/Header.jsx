@@ -2,17 +2,18 @@ import Logo from "../assets/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaUserCircle } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import userAtom from "../reducer/atom";
 import Cookies from "js-cookie";
+import { cartAtom } from "../reducer/cartAtom";
 
 const Header = () => {
   const [show, setShow] = useState(false);
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
   const [user, setUser] = useAtom(userAtom);
-  console.log(user);
+  const [cart, setCart] = useAtom(cartAtom);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -71,7 +72,7 @@ const Header = () => {
             <span className="relative">
               <FaShoppingCart className="lg:h-8 lg:w-8 h-6 w-6 text-zinc-100 " />
               <div className="absolute top-0 right-0 px-1 rounded-full bg-red-500 text-xs text-white">
-                12
+                {cart?.length}
               </div>
             </span>
           </Link>

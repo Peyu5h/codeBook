@@ -8,10 +8,22 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/DashBoard/DashBoardPage";
 import userAtom from "./reducer/atom";
 import { useAtom } from "jotai";
+import { cartAtom } from "./reducer/cartAtom";
+import { useEffect } from "react";
 
 const App = () => {
   const [user] = useAtom(userAtom);
+  const [cart, setCart] = useAtom(cartAtom);
 
+  const updateCart = async () => {
+    const data = await fetch(`http://localhost:3001/cart/${user.id}`);
+    const response = await data.json();
+    console.log("============================================");
+    setCart(response);
+  };
+  useEffect(() => {
+    updateCart();
+  }, []);
   return (
     <main className="bg-gray-800 h-screen w-full overflow-auto font-pop text-zinc-100 p-6 sm:p-12">
       <Routes>

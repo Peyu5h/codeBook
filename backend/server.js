@@ -43,6 +43,20 @@ app.get("/products/:id", async (req, res) => {
   }
 });
 
+app.get("/cart/:user_id", async (req, res) => {
+  try {
+    const userId = req.params.user_id;
+    const user = await User.findById(userId).populate("cart");
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json({ user: { cart: user.cart } });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 app.post("/addToCart", async (req, res) => {
   try {
     const { userId, productId } = req.body;
@@ -57,14 +71,25 @@ app.post("/addToCart", async (req, res) => {
     if (!product) {
       return res.status(404).json({ error: "Product not found" });
     }
+    const isProductInCart = user.cart.some((cartProduct) =>
+      cartProduct.equals(product._id)
+    );
 
-    user.cart.push(product);
+    if (isProductInCart) {
+      user.cart = user.cart.filter(
+        (cartProduct) => !cartProduct.equals(product._id)
+      );
+      await user.save();
 
-    await user.save();
+      res.status(200).json({ message: "Product removed from cart", user });
+    } else {
+      user.cart.push(product);
+      await user.save();
 
-    res
-      .status(200)
-      .json({ message: "Product added to cart successfully", user });
+      res
+        .status(200)
+        .json({ message: "Product added to cart successfully", user });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
