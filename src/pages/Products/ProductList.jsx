@@ -22,7 +22,7 @@ const ProductPage = () => {
     try {
       setLoading(true);
       const data = await fetch(
-        `http://localhost:3000/products/?name_like=${
+        `http://localhost:3001/products/?name_like=${
           searchTerm !== null ? searchTerm : ""
         }`
       );
@@ -304,7 +304,7 @@ const ProductPage = () => {
 
           <div className="grid lg:grid-cols-3 lg:grid-rows-1 md:grid-rows-1 grid-cols-1 md:grid-cols-2 grid-rows-3 gap-6 gap-y-8 mx-2 md:mx-24 mt-12">
             {filteredProductList.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product._id} product={product} />
             ))}
           </div>
         </div>

@@ -38,38 +38,36 @@ const Register = () => {
       password: Yup.string().required("Password is required"),
     }),
     onSubmit: async (values, { resetForm }) => {
-      setUser(values);
+      try {
+        const response = await fetch("http://localhost:3001/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values), // Use values directly from the callback parameter
+        });
+
+        const data = await response.json();
+
+        const { message, ...rest } = data;
+
+        if (data.message === "Registration successful! ") {
+          notify(data.message, "success");
+          Cookies.set("user", JSON.stringify(rest));
+
+          setTimeout(() => {
+            navigate("/");
+          }, 2000);
+        } else {
+          notify("User with email already exists!", "error");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+
       resetForm();
     },
   });
-
-  const handleSubmit = async (e) => {
-    try {
-      const response = await fetch("http://localhost:3001/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      });
-
-      const data = await response.json();
-
-      const { message, ...rest } = data;
-
-      {
-        data.message == "Registration successful! "
-          ? (notify(data.message, "success"),
-            Cookies.set("user", JSON.stringify(rest)),
-            setTimeout(() => {
-              navigate("/");
-            }, 2000))
-          : notify("User with email already exist!", "error");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   return (
     <div className="flex items-center text-gray-800 justify-center h-full flex-col font-pop">
@@ -139,13 +137,14 @@ const Register = () => {
               </div>
             ) : null}
           </div>
-          <button
-            onClick={handleSubmit}
-            type="submit"
-            className="p-4 bg-blue-600 text-white font-medium rounded-lg mb-6 hover:bg-blue-700 transition-all"
-          >
-            Register
-          </button>
+          <div onClick={formik.handleSubmit}>
+            <button
+              type="submit"
+              className="p-4 w-full bg-blue-600 text-white font-medium rounded-lg mb-6 hover:bg-blue-700 transition-all"
+            >
+              Register
+            </button>
+          </div>
 
           <div className="alreadyAcc text-sm">
             <span className="text-gray-600 font-thin">

@@ -3,7 +3,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-const generateToken = require("./helper/generateToken");
+// const generateToken = require("./helper/generateToken");
 
 const bcrypt = require("bcrypt");
 const User = require("./models/User");
@@ -21,6 +21,26 @@ app.use(bodyParser.json());
 app.get("/products", async (req, res) => {
   const products = await Product.find({});
   res.json(products);
+});
+
+app.get("/products/:id", async (req, res) => {
+  try {
+    const productId = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json({ message: "Invalid product ID" });
+    }
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.json(product);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 app.post("/addToCart", async (req, res) => {
@@ -84,13 +104,11 @@ app.post("/register", async (req, res) => {
 
     // Save the user to the database
     await newUser.save();
-    const token = generateToken({ id: newUser._id.toString() }, "7d");
 
     return res.json({
       id: newUser._id,
       name: newUser.name,
       email: newUser.email,
-      token: token,
       message: "Registration successful! ",
     });
   } catch (error) {
@@ -115,13 +133,10 @@ app.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    const token = generateToken({ id: user._id.toString() }, "7d");
-
     return res.json({
       id: user._id,
       name: user.name,
       email: user.email,
-      token: token,
       message: "Login Successful",
     });
   } catch (error) {

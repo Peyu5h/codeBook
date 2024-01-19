@@ -37,38 +37,36 @@ const Login = () => {
       password: Yup.string().required("Password is required"),
     }),
     onSubmit: async (values, { resetForm }) => {
-      setUser(values);
-      resetForm();
+      try {
+        const response = await fetch("http://localhost:3001/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values), // Use values directly from the callback parameter
+        });
+
+        const data = await response.json();
+
+        const { message, ...rest } = data;
+
+        if (data.message === "Login Successful") {
+          notify(data.message, "success");
+          Cookies.set("user", JSON.stringify(rest));
+
+          setTimeout(() => {
+            navigate("/");
+          }, 2000);
+        } else {
+          notify(data.message, "error");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+
+      resetForm(); // Move resetForm inside the try block to ensure it's called after the fetch
     },
   });
-
-  const handleSubmit = async (e) => {
-    try {
-      const response = await fetch("http://localhost:3001/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      });
-
-      const data = await response.json();
-
-      const { message, ...rest } = data;
-
-      {
-        data.message == "Login Successful"
-          ? (notify(data.message, "success"),
-            Cookies.set("user", JSON.stringify(rest)),
-            setTimeout(() => {
-              navigate("/");
-            }, 2000))
-          : notify("Incorrect credentials", "error");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   return (
     <div className="flex items-center text-gray-800 justify-center h-full flex-col font-pop">
@@ -119,14 +117,14 @@ const Login = () => {
               </div>
             ) : null}
           </div>
-          <button
-            onClick={handleSubmit}
-            type="submit"
-            className="p-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-all"
-          >
-            Login
-          </button>
-
+          <div onClick={formik.handleSubmit}>
+            <button
+              type="submit"
+              className="p-4 w-full bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-all"
+            >
+              Login
+            </button>
+          </div>
           <div className="OR my-2 text-gray-600 mx-auto">OR</div>
           <button
             type="submit"

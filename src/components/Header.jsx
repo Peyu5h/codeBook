@@ -12,6 +12,7 @@ const Header = () => {
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
   const [user, setUser] = useAtom(userAtom);
+  console.log(user);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -111,7 +112,10 @@ const Header = () => {
 
             <div
               onClick={() => {
-                Cookies.remove("user");
+                Cookies.remove("user"),
+                  navigate("/login"),
+                  window.location.reload(),
+                  setUser(null);
               }}
               className="text-md cursor-pointer font-light p-2  hover:bg-slate-500 transition-all border-slate-500 w-full"
             >

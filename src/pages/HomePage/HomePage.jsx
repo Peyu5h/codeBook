@@ -1,11 +1,13 @@
 import Header from "../../components/Header";
 import Hero from "../../components/Hero";
 import FeaturedProduct from "./FeaturedProduct";
-import { useAtom } from "jotai";
-import userAtom from "../../reducer/atom";
+import userReducer from "../../reducer/userReducer";
+import { useSelector, useDispatch } from "react-redux";
+
 const HomePage = () => {
-  const [user, setUser] = useAtom(userAtom);
-  console.log(user);
+  // const dispatch = useDispatch();
+  // const user = useSelector((state) => state.userReducer);
+
   return (
     <div>
       <Header />

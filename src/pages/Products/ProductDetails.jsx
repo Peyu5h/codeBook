@@ -35,7 +35,7 @@ const ProductDetails = () => {
 
   useEffect(() => {
     async function fetchData() {
-      const data = await fetch(`http://localhost:3000/products/${id}`);
+      const data = await fetch(`http://localhost:3001/products/${id}`);
       const response = await data.json();
       setProduct(response);
     }

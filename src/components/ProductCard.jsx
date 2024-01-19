@@ -35,7 +35,7 @@ const ProductCard = ({ product }) => {
   return (
     <div>
       <div className="card w-full rounded-lg h-auto bg-slate-700">
-        <Link to={`/books/${product.id}`}>
+        <Link to={`/books/${product._id}`}>
           <div className="imgContainer relative">
             <img
               className="rounded-t-lg w-full h-[16rem]"
