@@ -83,9 +83,11 @@ const Header = () => {
       </nav>
       {show ? (
         <div className="z-10 ml-auto absolute top-100 right-0 h-auto  w-44 rounded-b-md bg-slate-700">
-          <div className="text-sm font-light p-2 mt-2 w-full">
-            {user?.email}
-          </div>
+          {user && (
+            <div className="text-md font-light p-2 mt-2 w-full">
+              Welcome {user?.name}
+            </div>
+          )}
 
           <div className="divider h-[2px] w-full bg-slate-700 my-1 "></div>
           <div className="flex flex-col   items-start justify-start">
@@ -94,33 +96,41 @@ const Header = () => {
                 All ebooks
               </div>
             </Link>
-            <Link to="/login" className="w-full">
-              <div className="text-md  cursor-pointer font-light p-2 border-b-[1px] hover:bg-slate-500 transition-all border-slate-500 w-full">
-                Login
-              </div>
-            </Link>
-            <Link to="/register" className="w-full">
-              <div className="text-md  cursor-pointer font-light p-2 border-b-[1px] hover:bg-slate-500 transition-all border-slate-500 w-full">
-                Register
-              </div>
-            </Link>
-            <Link to="/dashboard" className="w-full">
-              <div className="text-md cursor-pointer font-light p-2 border-b-[1px] hover:bg-slate-500 transition-all border-slate-500 w-full">
-                Dashboard
-              </div>
-            </Link>
+            {!user && (
+              <Link to="/login" className="w-full">
+                <div className="text-md  cursor-pointer font-light p-2 border-b-[1px] hover:bg-slate-500 transition-all border-slate-500 w-full">
+                  Login
+                </div>
+              </Link>
+            )}
+            {!user && (
+              <Link to="/register" className="w-full">
+                <div className="text-md  cursor-pointer font-light p-2 border-b-[1px] hover:bg-slate-500 transition-all border-slate-500 w-full">
+                  Register
+                </div>
+              </Link>
+            )}
+            {user && (
+              <Link to="/dashboard" className="w-full">
+                <div className="text-md cursor-pointer font-light p-2 border-b-[1px] hover:bg-slate-500 transition-all border-slate-500 w-full">
+                  Dashboard
+                </div>
+              </Link>
+            )}
 
-            <div
-              onClick={() => {
-                Cookies.remove("user"),
-                  navigate("/login"),
-                  window.location.reload(),
-                  setUser(null);
-              }}
-              className="text-md cursor-pointer font-light p-2  hover:bg-slate-500 transition-all border-slate-500 w-full"
-            >
-              Logout
-            </div>
+            {user && (
+              <div
+                onClick={() => {
+                  Cookies.remove("user"),
+                    navigate("/login"),
+                    window.location.reload(),
+                    setUser(null);
+                }}
+                className="text-md cursor-pointer font-light p-2  hover:bg-slate-500 transition-all border-slate-500 w-full"
+              >
+                Logout
+              </div>
+            )}
           </div>
         </div>
       ) : null}

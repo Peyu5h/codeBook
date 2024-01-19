@@ -43,28 +43,28 @@ const Login = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(values), // Use values directly from the callback parameter
+          body: JSON.stringify(values),
         });
 
         const data = await response.json();
 
-        const { message, ...rest } = data;
-
         if (data.message === "Login Successful") {
           notify(data.message, "success");
-          Cookies.set("user", JSON.stringify(rest));
-
-          setTimeout(() => {
-            navigate("/");
-          }, 2000);
+          Cookies.set("user", JSON.stringify(data));
         } else {
           notify(data.message, "error");
+        }
+
+        if (data.message === "Login Successful") {
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
         }
       } catch (error) {
         console.log(error);
       }
 
-      resetForm(); // Move resetForm inside the try block to ensure it's called after the fetch
+      resetForm(); // Move resetForm inside the try block
     },
   });
 
