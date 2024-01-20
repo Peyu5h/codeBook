@@ -3,7 +3,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-// const generateToken = require("./helper/generateToken");
+const cookie = require("cookie-js");
 
 const bcrypt = require("bcrypt");
 const User = require("./models/User");
@@ -160,6 +160,23 @@ app.post("/emptyCart", async (req, res) => {
     console.error("Error emptying cart:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
+});
+
+app.get("/generateGuestCookie", (req, res) => {
+  // Generate a unique guest ID (you can use a UUID library for this)
+  const guestId = "65abb730d597db94b772cb11";
+
+  // Set the guest ID as a cookie
+  const cookieOptions = { expires: 365 }; // You can customize the expiration as needed
+  const cookieValue = JSON.stringify({ guestId });
+  const encodedCookie = cookie.encode(
+    "guestCookie",
+    cookieValue,
+    cookieOptions
+  );
+  res.setHeader("Set-Cookie", [encodedCookie]);
+
+  res.send("Guest cookie set!");
 });
 
 mongoose
