@@ -12,6 +12,32 @@ const CartPage = () => {
 
   const totalPrice = cartItems.reduce((acc, item) => acc + item.price, 0);
 
+  const handleUpdate = async () => {
+    try {
+      const response = await fetch("http://localhost:3001/order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user.id,
+          items: cartItems,
+          total: totalPrice,
+        }),
+      });
+      const data = await response.json();
+      console.log(data.message);
+      setCartItems([]);
+      const response2 = await fetch("http://localhost:3001/emptyCart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id }),
+      });
+      const data2 = await response2.json();
+      console.log(data2.message);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div>
       <Header />
@@ -43,7 +69,10 @@ const CartPage = () => {
           <div className="divider h-[2px] w-full bg-slate-700 my-8 "></div>
 
           <div className="flex justify-end my-6">
-            <button className="md:text-lg text-xs bg-blue-600 rounded-lg hover:bg-green-600 transition-all py-2 px-3 flex items-center">
+            <button
+              onClick={handleUpdate}
+              className="md:text-lg text-xs bg-blue-600 rounded-lg hover:bg-green-600 transition-all py-2 px-3 flex items-center"
+            >
               Place Order <FaArrowRightLong className="ml-3" />
             </button>
           </div>

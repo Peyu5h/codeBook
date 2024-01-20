@@ -54,12 +54,13 @@ const Register = () => {
         if (data.message === "Registration successful! ") {
           notify(data.message, "success");
           Cookies.set("user", JSON.stringify(rest));
-
-          setTimeout(() => {
-            navigate("/");
-          }, 2000);
         } else {
           notify("User with email already exists!", "error");
+        }
+        if (data.message === "Registration successful! ") {
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
         }
       } catch (error) {
         console.log(error);

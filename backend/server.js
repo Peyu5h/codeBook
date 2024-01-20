@@ -96,6 +96,72 @@ app.post("/addToCart", async (req, res) => {
   }
 });
 
+app.post("/order", async (req, res) => {
+  try {
+    const { userId, items, total } = req.body;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const orderItems = [];
+
+    for (const item of items) {
+      const product = await Product.findById(item._id);
+
+      if (!product) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+
+      orderItems.push(product._id);
+    }
+
+    const order = {
+      date: Date.now(),
+      total: total,
+      items: orderItems,
+    };
+
+    user.oldOrders = user.oldOrders || [];
+    user.oldOrders.push({
+      date: user.orderDate,
+      items: user.order,
+      total: total,
+    });
+
+    user.order = orderItems;
+    user.orderDate = order.date;
+
+    await user.save();
+
+    return res.status(200).json({ message: "Order created successfully" });
+  } catch (error) {
+    console.error("Error creating order:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.post("/emptyCart", async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    user.cart = [];
+
+    await user.save();
+
+    return res.status(200).json({ message: "Cart emptied successfully" });
+  } catch (error) {
+    console.error("Error emptying cart:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 mongoose
   .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
@@ -105,6 +171,30 @@ mongoose
   .catch((err) => console.log("Error connecting to DB:", err));
 
 const PORT = process.env.PORT || 3001;
+
+app.get("/userDetails/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid user ID" });
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Omit the password field from the response for security reasons
+    const { password, ...userDetails } = user.toObject();
+
+    res.json(userDetails);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 app.post("/register", async (req, res) => {
   try {
@@ -117,17 +207,14 @@ app.post("/register", async (req, res) => {
         .json({ error: "User with this email already exists" });
     }
 
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create a new user
     const newUser = new User({
       name,
       email,
       password: hashedPassword,
     });
 
-    // Save the user to the database
     await newUser.save();
 
     return res.json({
