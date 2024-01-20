@@ -1,11 +1,15 @@
 import { useAtom } from "jotai";
 import { carItemsAtom } from "../../reducer/atom";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../reducer/cartSlice";
 
-const CartList = ({ name, price, img }) => {
+const CartList = ({ name, price, img, productId, userId }) => {
   const [cartItems, setCartItems] = useAtom(carItemsAtom);
+  const dispatch = useDispatch();
 
   const handleRemove = () => {
     setCartItems(cartItems.filter((item) => item.name !== name));
+    dispatch(addToCart({ userId: userId, productId }));
   };
 
   return (

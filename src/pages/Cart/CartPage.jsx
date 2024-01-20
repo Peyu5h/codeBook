@@ -4,9 +4,11 @@ import { FaArrowRightLong } from "react-icons/fa6";
 import { useAtom } from "jotai";
 import { carItemsAtom } from "../../reducer/atom";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useAtom(carItemsAtom);
+  const user = useSelector((state) => state.user);
 
   const totalPrice = cartItems.reduce((acc, item) => acc + item.price, 0);
 
@@ -27,6 +29,8 @@ const CartPage = () => {
             name={item.name}
             price={item.price}
             img={item.poster}
+            productId={item._id}
+            userId={user.id}
           />
         ))}
 

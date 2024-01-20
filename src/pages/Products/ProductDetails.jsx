@@ -3,6 +3,10 @@ import { IoAdd } from "react-icons/io5";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useAtom } from "jotai";
+import { carItemsAtom } from "../../reducer/atom";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../../reducer/cartSlice";
 const ProductDetails = () => {
   const { id } = useParams();
   console.log(id);
@@ -41,6 +45,20 @@ const ProductDetails = () => {
     }
     fetchData();
   }, []);
+  const [cartItems, setCartItems] = useAtom(carItemsAtom);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+
+  const handleRemove = () => {
+    const existingItem = cartItems.find((item) => item.name === product.name);
+
+    if (existingItem) {
+      setCartItems(cartItems.filter((item) => item.name !== product.name));
+    } else {
+      setCartItems([...cartItems, product]);
+    }
+    dispatch(addToCart({ userId: user.id, productId: id }));
+  };
 
   return (
     <div>
@@ -74,17 +92,20 @@ const ProductDetails = () => {
                 {product.size} MB
               </div>
             </div>
-            <div className="btn">
-              <button className="ADD bg-blue-500 text-white hover:bg-blue-600 transition-all md:px-3 md:py-2 px-2 py-1 rounded-md">
-                <span span className="flex items-center">
-                  Add to cart <IoAdd className="ml-2" />
-                </span>
-              </button>
-              <button className=" hidden REMOVE bg-red-600 text-white hover:bg-red-700 transition-all md:px-3 md:py-2 px-2 py-1 rounded-md">
-                <span span className="flex items-center">
-                  Remove <FaRegTrashCan className="ml-2" />
-                </span>
-              </button>
+            <div onClick={handleRemove} className="btn">
+              {cartItems.find((item) => item.name === product.name) ? (
+                <button className="  REMOVE bg-red-600 text-white hover:bg-red-700 transition-all md:px-3 md:py-2 px-2 py-1 rounded-md">
+                  <span span className="flex items-center">
+                    Remove <FaRegTrashCan className="ml-2" />
+                  </span>
+                </button>
+              ) : (
+                <button className="ADD bg-blue-500 text-white hover:bg-blue-600 transition-all md:px-3 md:py-2 px-2 py-1 rounded-md">
+                  <span span className="flex items-center">
+                    Add to cart <IoAdd className="ml-2" />
+                  </span>
+                </button>
+              )}
             </div>
 
             <div className="description">{product.long_description}</div>

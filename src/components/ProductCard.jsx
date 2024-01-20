@@ -11,6 +11,7 @@ const ProductCard = ({ product, onAddToCart }) => {
   // const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
   const user = useSelector((state) => state.user);
+  const [carItems, setCarItems] = useAtom(carItemsAtom);
 
   // const user = useSelector((state) => state.user);
 
@@ -74,19 +75,19 @@ const ProductCard = ({ product, onAddToCart }) => {
             </div>
 
             <button onClick={onAddToCart}>
-              {/* {isInCart ? ( */}
-              <div className="ADD bg-blue-500 text-white hover:bg-blue-600 transition-all md:px-3 md:py-2 px-2 py-1 rounded-md">
-                <span className="flex items-center">
-                  Add to cart <IoAdd className="ml-2" />
-                </span>
-              </div>
-              {/* ) : ( */}
-              <div className="REMOVE bg-red-600 text-white hover:bg-red-700 transition-all md:px-3 md:py-2 px-2 py-1 rounded-md">
-                <span className="flex items-center">
-                  Remove <FaRegTrashCan className="ml-2" />
-                </span>
-              </div>
-              {/* )} */}
+              {carItems.find((item) => item._id === product._id) ? (
+                <div className="REMOVE bg-red-600 text-white hover:bg-red-700 transition-all md:px-3 md:py-2 px-2 py-1 rounded-md">
+                  <span className="flex items-center">
+                    Remove <FaRegTrashCan className="ml-2" />
+                  </span>
+                </div>
+              ) : (
+                <div className="ADD bg-blue-500 text-white hover:bg-blue-600 transition-all md:px-3 md:py-2 px-2 py-1 rounded-md">
+                  <span className="flex items-center">
+                    Add to cart <IoAdd className="ml-2" />
+                  </span>
+                </div>
+              )}
             </button>
           </div>
         </div>

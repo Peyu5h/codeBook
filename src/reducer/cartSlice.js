@@ -1,5 +1,7 @@
 // cartSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { useAtom } from "jotai";
+import { carItemsAtom } from "./atom";
 
 const fetchUserCart = createAsyncThunk("cart/fetchUserCart", async (userId) => {
   try {
