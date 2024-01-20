@@ -6,7 +6,10 @@ import { RxCross2 } from "react-icons/rx";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useAtom } from "jotai";
-import { cartAtom } from "../../reducer/cartAtom";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../../reducer/cartSlice";
+import { carItemsAtom } from "../../reducer/atom";
+// import { cartAtom } from "../../reducer/cartAtom";
 
 const ProductPage = () => {
   const location = useLocation();
@@ -110,8 +113,24 @@ const ProductPage = () => {
     setOnlyInStock("");
     setBestSellerOnly("");
   };
-  const [cart, setCart] = useAtom(cartAtom);
+  const dispatch = useDispatch();
+  const cart = useSelector((state) => state.cart);
+  const user = useSelector((state) => state.user);
 
+  const [carItems, setCarItems] = useAtom(carItemsAtom);
+
+  const handleAddToCart = async (productId) => {
+    await dispatch(addToCart({ userId: user.id, productId }));
+
+    try {
+      const response = await fetch(`http://localhost:3001/cart/${user.id}`);
+      const data = await response.json();
+      setCarItems(data.user.cart);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  console.log(carItems);
   return (
     <div>
       <Header />
@@ -307,7 +326,11 @@ const ProductPage = () => {
 
           <div className="grid lg:grid-cols-3 lg:grid-rows-1 md:grid-rows-1 grid-cols-1 md:grid-cols-2 grid-rows-3 gap-6 gap-y-8 mx-2 md:mx-24 mt-12">
             {filteredProductList.map((product) => (
-              <ProductCard key={product._id} product={product} cart={cart} />
+              <ProductCard
+                key={product._id}
+                product={product}
+                onAddToCart={() => handleAddToCart(product._id)}
+              />
             ))}
           </div>
         </div>

@@ -6,28 +6,35 @@ import ProductDetails from "./pages/Products/ProductDetails";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/DashBoard/DashBoardPage";
-import userAtom from "./reducer/atom";
-import { useAtom } from "jotai";
-import { cartAtom } from "./reducer/cartAtom";
-import { useEffect } from "react";
+import { useState } from "react";
+// import userAtom from "./reducer/atom";
+// import { useAtom } from "jotai";
+// import { cartAtom } from "./reducer/cartAtom";
+// import { useEffect } from "react";
+
+import { useSelector, useDispatch } from "react-redux";
 
 const App = () => {
-  const [user] = useAtom(userAtom);
-  const [cart, setCart] = useAtom(cartAtom);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
 
-  const updateCart = async () => {
-    const data = await fetch(`http://localhost:3001/cart/${user.id}`);
-    const response = await data.json();
-    console.log("============================================");
-    setCart(response);
-  };
-  useEffect(() => {
-    updateCart();
-  }, []);
+  // const [user, setUser] = useState(false);
+
+  // const [cart, setCart] = useAtom(cartAtom);
+
+  // const updateCart = async () => {
+  //   const data = await fetch(`http://localhost:3001/cart/${user.id}`);
+  //   const response = await data.json();
+  //   console.log("============================================");
+  //   setCart(response);
+  // };
+  // useEffect(() => {
+  //   updateCart();
+  // }, []);
   return (
     <main className="bg-gray-800 h-screen w-full overflow-auto font-pop text-zinc-100 p-6 sm:p-12">
       <Routes>
-        {user ? (
+        {user !== null ? (
           <>
             <Route path="/" element={<HomePage />} />
             <Route path="/books" element={<ProductList />} />

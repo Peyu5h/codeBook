@@ -3,17 +3,23 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaUserCircle } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { useAtom } from "jotai";
-import userAtom from "../reducer/atom";
+
+// import { useAtom } from "jotai";
+// import userAtom from "../reducer/atom";
 import Cookies from "js-cookie";
-import { cartAtom } from "../reducer/cartAtom";
+import { useDispatch, useSelector } from "react-redux";
+// import { cartAtom } from "../reducer/cartAtom";
+import { carItemsAtom } from "../reducer/atom";
+import { useAtom } from "jotai";
 
 const Header = () => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+  const [carItems] = useAtom(carItemsAtom);
+
   const [show, setShow] = useState(false);
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
-  const [user, setUser] = useAtom(userAtom);
-  const [cart, setCart] = useAtom(cartAtom);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -72,7 +78,7 @@ const Header = () => {
             <span className="relative">
               <FaShoppingCart className="lg:h-8 lg:w-8 h-6 w-6 text-zinc-100 " />
               <div className="absolute top-0 right-0 px-1 rounded-full bg-red-500 text-xs text-white">
-                {cart?.length}
+                {carItems?.length}
               </div>
             </span>
           </Link>
@@ -125,7 +131,7 @@ const Header = () => {
                   Cookies.remove("user"),
                     navigate("/login"),
                     window.location.reload(),
-                    setUser(null);
+                    dispatch({ type: "LOGOUT" });
                 }}
                 className="text-md cursor-pointer font-light p-2  hover:bg-slate-500 transition-all border-slate-500 w-full"
               >
