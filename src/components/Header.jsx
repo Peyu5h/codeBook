@@ -2,7 +2,7 @@ import Logo from "../assets/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaUserCircle } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import Cookies from "js-cookie";
 import { useDispatch, useSelector } from "react-redux";

@@ -6,18 +6,19 @@ import { carItemsAtom } from "../../reducer/atom";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { BeatLoader, ClipLoader, PulseLoader } from "react-spinners";
+import { PulseLoader } from "react-spinners";
 
 const CartPage = () => {
   const [loading, setLoading] = useState(false);
   const [cartItems, setCartItems] = useAtom(carItemsAtom);
   const user = useSelector((state) => state.user);
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   const totalPrice = cartItems.reduce((acc, item) => acc + item.price, 0);
 
   const handleUpdate = async () => {
     try {
-      const response = await fetch("http://localhost:3001/order", {
+      const response = await fetch(`${backendUrl}/order`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -35,7 +36,7 @@ const CartPage = () => {
 
         try {
           // Your asynchronous operation (e.g., another API call)
-          const response2 = await fetch("http://localhost:3001/emptyCart", {
+          const response2 = await fetch(`${backendUrl}/emptyCart`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ userId: user.id }),

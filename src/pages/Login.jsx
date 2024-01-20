@@ -43,7 +43,7 @@ const Login = () => {
     }),
     onSubmit: async (values, { resetForm }) => {
       try {
-        const response = await fetch("http://localhost:3001/login", {
+        const response = await fetch(`${backendUrl}/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -72,11 +72,12 @@ const Login = () => {
       resetForm(); // Move resetForm inside the try block
     },
   });
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   const handleGuestLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:3001/login", {
+      const response = await fetch(`${backendUrl}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

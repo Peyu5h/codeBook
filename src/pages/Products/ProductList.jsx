@@ -9,9 +9,10 @@ import { useAtom } from "jotai";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../reducer/cartSlice";
 import { carItemsAtom } from "../../reducer/atom";
-// import { cartAtom } from "../../reducer/cartAtom";
 
 const ProductPage = () => {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const searchTerm = searchParams.get("search");
@@ -27,7 +28,7 @@ const ProductPage = () => {
     try {
       setLoading(true);
       const data = await fetch(
-        `http://localhost:3001/products/?search=${
+        `${backendUrl}/products/?search=${
           searchTerm !== null ? searchTerm : ""
         }`
       );
@@ -123,7 +124,7 @@ const ProductPage = () => {
     await dispatch(addToCart({ userId: user.id, productId }));
 
     try {
-      const response = await fetch(`http://localhost:3001/cart/${user.id}`);
+      const response = await fetch(`${backendUrl}/cart/${user.id}`);
       const data = await response.json();
       setCarItems(data.user.cart);
     } catch (error) {

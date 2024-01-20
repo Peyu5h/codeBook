@@ -8,6 +8,8 @@ import { carItemsAtom } from "../../reducer/atom";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../reducer/cartSlice";
 const ProductDetails = () => {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
   const { id } = useParams();
   console.log(id);
   const [product, setProduct] = useState([]);
@@ -39,7 +41,7 @@ const ProductDetails = () => {
 
   useEffect(() => {
     async function fetchData() {
-      const data = await fetch(`http://localhost:3001/products/${id}`);
+      const data = await fetch(`${backendUrl}/products/${id}`);
       const response = await data.json();
       setProduct(response);
     }

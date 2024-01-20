@@ -5,11 +5,11 @@ import { useEffect, useState } from "react";
 const DashBoardPage = () => {
   const [userData, setUserData] = useState({});
   const user = useSelector((state) => state.user);
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
   useEffect(() => {
     const fetchUserDetails = async () => {
-      const response = await fetch(
-        `http://localhost:3001/userDetails/${user.id}`
-      );
+      const response = await fetch(`${backendUrl}/userDetails/${user.id}`);
       const data = await response.json();
       setUserData(data);
     };

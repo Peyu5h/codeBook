@@ -7,10 +7,11 @@ import { carItemsAtom } from "../../reducer/atom";
 
 const FeaturedProduct = () => {
   const [product, setProduct] = useState([]);
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     async function fetchData() {
-      const data = await fetch("http://localhost:3001/products");
+      const data = await fetch(`${backendUrl}/products`);
       const response = await data.json();
       setProduct(response);
     }
@@ -24,7 +25,7 @@ const FeaturedProduct = () => {
     await dispatch(addToCart({ userId: user.id, productId }));
 
     try {
-      const response = await fetch(`http://localhost:3001/cart/${user.id}`);
+      const response = await fetch(`${backendUrl}/cart/${user.id}`);
       const data = await response.json();
       setCarItems(data.user.cart);
     } catch (error) {

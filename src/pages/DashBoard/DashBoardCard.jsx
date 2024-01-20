@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 
 const DashBoardCard = ({ itemId }) => {
   const [item, setItem] = useState({});
-
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
   useEffect(() => {
     const fetchItem = async () => {
-      const response = await fetch(`http://localhost:3001/products/${itemId}`);
+      const response = await fetch(`${backendUrl}/products/${itemId}`);
       const data = await response.json();
       setItem(data);
     };

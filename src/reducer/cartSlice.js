@@ -1,9 +1,10 @@
 // cartSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const fetchUserCart = createAsyncThunk("cart/fetchUserCart", async (userId) => {
   try {
-    const response = await fetch(`http://localhost:3001/cart/${userId}`);
+    const response = await fetch(`${backendUrl}/cart/${userId}`);
     const data = await response.json();
     return data;
   } catch (error) {
@@ -16,7 +17,7 @@ const addToCart = createAsyncThunk(
   "cart/addToCart",
   async ({ userId, productId }) => {
     try {
-      const data = await fetch(`http://localhost:3001/addToCart`, {
+      const data = await fetch(`${backendUrl}/addToCart`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

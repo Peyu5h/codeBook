@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 const Register = () => {
   const [user, setUser] = useState({});
   const navigate = useNavigate();
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   const notify = (message, type) => {
     toast(message, {
@@ -39,7 +40,7 @@ const Register = () => {
     }),
     onSubmit: async (values, { resetForm }) => {
       try {
-        const response = await fetch("http://localhost:3001/register", {
+        const response = await fetch(`${backendUrl}/register`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

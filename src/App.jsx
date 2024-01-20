@@ -14,13 +14,14 @@ import { carItemsAtom } from "./reducer/atom";
 
 const App = () => {
   const [cartItems, setCartItems] = useAtom(carItemsAtom);
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   useEffect(() => {
     const getInitialData = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/cart/${user.id}`);
+        const response = await fetch(`${backendUrl}/cart/${user.id}`);
         const data = await response.json();
         setCartItems(data.user.cart);
       } catch (error) {
