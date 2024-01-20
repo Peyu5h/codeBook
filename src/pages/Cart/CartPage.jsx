@@ -5,8 +5,11 @@ import { useAtom } from "jotai";
 import { carItemsAtom } from "../../reducer/atom";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { BeatLoader, ClipLoader, PulseLoader } from "react-spinners";
 
 const CartPage = () => {
+  const [loading, setLoading] = useState(false);
   const [cartItems, setCartItems] = useAtom(carItemsAtom);
   const user = useSelector((state) => state.user);
 
@@ -25,14 +28,27 @@ const CartPage = () => {
       });
       const data = await response.json();
       console.log(data.message);
-      setCartItems([]);
-      const response2 = await fetch("http://localhost:3001/emptyCart", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.id }),
-      });
-      const data2 = await response2.json();
-      console.log(data2.message);
+      setLoading(true);
+      setTimeout(async () => {
+        setLoading(false);
+        setCartItems([]);
+
+        try {
+          // Your asynchronous operation (e.g., another API call)
+          const response2 = await fetch("http://localhost:3001/emptyCart", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId: user.id }),
+          });
+
+          const data2 = await response2.json();
+          console.log(data2.message);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setLoading(false);
+        }
+      }, 3000);
     } catch (error) {
       console.log(error);
     }
@@ -62,19 +78,51 @@ const CartPage = () => {
 
         <div className="bottom mx-auto  w-full md:w-[70%]">
           <div className="divider h-[2px] w-full bg-slate-700 my-8 "></div>
-          <div className="total flex justify-between">
-            <div className="sm:text-xl text-lg">Total Amount:</div>
-            <div className="text-xl font-semibold mr-8">${totalPrice}</div>
-          </div>
+          {cartItems.length !== 0 ? (
+            <div className="total flex justify-between">
+              <div className="sm:text-xl text-lg">Total Amount:</div>
+              <div className="text-xl font-semibold mr-8">${totalPrice}</div>
+            </div>
+          ) : (
+            <>
+              <h1 className="text-center text-xl font-bold">
+                No Items in cart :(
+                <Link to="/books">
+                  <button className="bg-blue-500 ml-6 px-3 py-2 rounded-lg font-normal text-sm  ">
+                    See all books
+                  </button>
+                </Link>
+              </h1>
+            </>
+          )}
+
           <div className="divider h-[2px] w-full bg-slate-700 my-8 "></div>
 
           <div className="flex justify-end my-6">
-            <button
-              onClick={handleUpdate}
-              className="md:text-lg text-xs bg-blue-600 rounded-lg hover:bg-green-600 transition-all py-2 px-3 flex items-center"
-            >
-              Place Order <FaArrowRightLong className="ml-3" />
-            </button>
+            {cartItems.length !== 0 ? (
+              loading ? (
+                <button
+                  onClick={handleUpdate}
+                  className="md:text-lg text-xs rounded-lg bg-green-600 transition-all py-2 px-3 flex items-center"
+                >
+                  Wait{" "}
+                  <PulseLoader className="ml-3" size={10} color="#ffffff" />
+                </button>
+              ) : (
+                <button
+                  onClick={handleUpdate}
+                  className="md:text-lg text-xs bg-blue-600 rounded-lg hover:bg-green-600 transition-all py-2 px-3 flex items-center"
+                >
+                  Place Order <FaArrowRightLong className="ml-3" />
+                </button>
+              )
+            ) : (
+              <Link to="/dashboard">
+                <button className="md:text-lg text-xs bg-green-600 transition-all py-2 px-3 flex items-center rounded-lg">
+                  Go to Dashboard
+                </button>
+              </Link>
+            )}
           </div>
         </div>
       </main>

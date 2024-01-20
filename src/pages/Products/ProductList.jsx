@@ -27,7 +27,7 @@ const ProductPage = () => {
     try {
       setLoading(true);
       const data = await fetch(
-        `http://localhost:3001/products/?name_like=${
+        `http://localhost:3001/products/?search=${
           searchTerm !== null ? searchTerm : ""
         }`
       );

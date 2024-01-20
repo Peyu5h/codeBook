@@ -4,13 +4,11 @@ import { FaShoppingCart } from "react-icons/fa";
 import { FaUserCircle } from "react-icons/fa";
 import { useEffect, useState } from "react";
 
-// import { useAtom } from "jotai";
-// import userAtom from "../reducer/atom";
 import Cookies from "js-cookie";
 import { useDispatch, useSelector } from "react-redux";
-// import { cartAtom } from "../reducer/cartAtom";
 import { carItemsAtom } from "../reducer/atom";
 import { useAtom } from "jotai";
+import { RxCross2 } from "react-icons/rx";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -24,9 +22,15 @@ const Header = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     search ? navigate(`/books?search=${search}`) : null;
-    setSearch("");
   };
 
+  const handleCross = (e) => {
+    e.preventDefault();
+    setSearch("");
+    setTimeout(() => {
+      navigate(`/books`);
+    }, 500);
+  };
   return (
     <div className="header-container relative">
       <nav className="flex justify-between pb-6 border-b-2 border-gray-700">
@@ -42,7 +46,7 @@ const Header = () => {
           onClick={handleSubmit}
           className="flex items-center lg:gap-8 gap-5 cursor-pointer z-999"
         >
-          <div className="search bar relative hidden md:block">
+          <div className="search bar relative hidden md:block ">
             <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
               <svg
                 className="w-4 h-4 text-gray-500 dark:text-gray-400"
@@ -60,7 +64,7 @@ const Header = () => {
                 />
               </svg>
             </div>
-            <form onSubmit={handleSubmit}>
+            <form className="flex" onSubmit={handleSubmit}>
               <input
                 type="text"
                 onChange={(e) => setSearch(e.target.value)}
@@ -71,6 +75,12 @@ const Header = () => {
                 placeholder="Search..."
                 autoComplete="off"
               />
+              {search && (
+                <RxCross2
+                  onClick={handleCross}
+                  className="text-xl mx-4 my-2 absolute right-0"
+                />
+              )}
             </form>
           </div>
 

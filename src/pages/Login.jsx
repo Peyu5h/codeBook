@@ -10,6 +10,11 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [user, setUser] = useState({});
   const navigate = useNavigate();
+  const guestUser = {
+    email: "guest@gmail.com",
+    password: "12345678",
+  };
+  console.log(guestUser);
 
   const notify = (message, type) => {
     toast(message, {
@@ -67,6 +72,36 @@ const Login = () => {
       resetForm(); // Move resetForm inside the try block
     },
   });
+
+  const handleGuestLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://localhost:3001/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(guestUser),
+      });
+
+      const data = await response.json();
+
+      if (data.message === "Login Successful") {
+        notify(data.message, "success");
+        Cookies.set("user", JSON.stringify(data));
+      } else {
+        notify(data.message, "error");
+      }
+
+      if (data.message === "Login Successful") {
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="flex items-center text-gray-800 justify-center h-full flex-col font-pop">
@@ -127,6 +162,7 @@ const Login = () => {
           </div>
           <div className="OR my-2 text-gray-600 mx-auto">OR</div>
           <button
+            onClick={handleGuestLogin}
             type="submit"
             className="p-4 bg-blue-600 text-white font-medium rounded-lg mb-6 hover:bg-blue-700 transition-all"
           >

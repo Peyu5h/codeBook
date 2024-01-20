@@ -19,8 +19,17 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.get("/products", async (req, res) => {
-  const products = await Product.find({});
-  res.json(products);
+  try {
+    const searchTerm = req.query.search || "";
+
+    const query = searchTerm ? { name: new RegExp(searchTerm, "i") } : {};
+
+    const products = await Product.find(query);
+    res.json(products);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 app.get("/products/:id", async (req, res) => {
